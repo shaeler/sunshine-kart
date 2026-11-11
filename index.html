@@ -11,6 +11,7 @@
 <body data-mode="menu">
   <main id="game" aria-label="晴空卡丁车">
     <div id="stage" aria-hidden="true"></div>
+    <audio id="race-music" src="https://kartrider.wiki.gg/zh/images/transcoded/Title.ogg/Title.ogg.mp3" preload="metadata" loop hidden></audio>
     <div class="shade" aria-hidden="true"></div>
     <header class="topbar">
       <div class="brand"><span class="flag" aria-hidden="true"></span><span>SUNSHINE<i>KART</i></span></div>
@@ -69,6 +70,6 @@
     </section>
     <div class="modal" id="error" role="alert" hidden><div class="pause-card"><h2>赛道加载失败</h2><p>请使用支持 WebGL 2 的浏览器打开游戏。</p></div></div>
   </main>
-  <script type="module" src="./game.js"></script>
+  <script type="module" src="./game.js?v=2"></script>
 </body>
 </html>

@@ -1,10 +1,10 @@
 import {BOOST_TIME, STEP, drive, newKart, newLap, trackLength, updateLap} from "./physics.js";
-import {Sound} from "./music.js";
+import {Sound} from "./music.js?v=2";
 import {World, drawMap} from "./world.js";
 
 const el = id => document.getElementById(id);
 const stage=el("stage");
-const sound=new Sound();
+const sound=new Sound(el("race-music"));
 const recordKey="sunshine-kart/bay-v1/best";
 const muteKey="sunshine-kart/mute";
 const controls=new Set(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight","KeyW","KeyA","KeyS","KeyD","ShiftLeft","ShiftRight","Space"]);
@@ -76,7 +76,7 @@ function launch() {
 
   function begin() {
     sound.unlock();
-    sound.race(false,true);
+    sound.prepareRace();
     clearControls();
     kart=newKart();
     lap=newLap();
@@ -119,6 +119,7 @@ function launch() {
     if(mode!=="paused") return;
     sound.unlock();
     if(pausedFrom==="race") sound.race(true);
+    else sound.prepareRace();
     accumulator=0;
     setMode(pausedFrom);
     ui.resume.blur();

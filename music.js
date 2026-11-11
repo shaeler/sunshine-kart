@@ -34,11 +34,17 @@ const pluckHarmonics = [0,1,.36,.14,.25,.17,.045,.055,.02];
 const hz = note => 440 * 2**((note - 69) / 12);
 
 export class Sound {
-  constructor() {
+  constructor(track) {
     this.muted = false;
     this.playing = false;
     this.nextTime = 0;
     this.index = 0;
+    this.track = track;
+    if (track) {
+      track.volume = .24;
+      track.muted = true;
+      track.addEventListener("error", () => this.useFallbackTrack(), {once:true});
+    }
   }
 
   unlock() {
@@ -76,12 +82,39 @@ export class Sound {
 
   setMuted(muted) {
     this.muted = muted;
+    if (this.track) this.track.muted = muted || !this.playing;
     if (this.context) this.master.gain.setTargetAtTime(muted ? 0 : .65,this.context.currentTime,.025);
   }
 
+  prepareRace() {
+    this.race(false, true);
+    // Prime the media element during the start gesture, before the countdown finishes.
+    if (this.track) this.playTrack();
+  }
+
+  playTrack() {
+    this.track.play().catch(error => {
+      if (error.name !== "AbortError") this.useFallbackTrack();
+    });
+  }
+
+  useFallbackTrack() {
+    if (!this.track) return;
+    this.track.pause();
+    this.track = null;
+    if (this.playing) this.race(true, true);
+  }
+
   race(playing, reset = false) {
-    if (!this.context) return;
     this.playing = playing;
+    if (this.track) {
+      if (reset) this.track.currentTime = 0;
+      this.track.muted = this.muted || !playing;
+      if (playing) this.playTrack();
+      else this.track.pause();
+      return;
+    }
+    if (!this.context) return;
     this.music.gain.setTargetAtTime(playing ? .84 : 0,this.context.currentTime,.045);
     if (reset) this.index = 0;
     if (playing) this.nextTime = this.context.currentTime+.055;
@@ -218,7 +251,7 @@ export class Sound {
     const now = this.context.currentTime;
     this.engine.frequency.setTargetAtTime(37+Math.abs(kart.speed)*2.6,now,.07);
     this.engineGain.gain.setTargetAtTime(active ? .018+Math.abs(kart.speed)*.001 : 0,now,.07);
-    if (!this.playing) return;
+    if (!this.playing || this.track) return;
     if (this.nextTime < now-.2) this.nextTime = now+.03;
     while (this.nextTime < now+.15) {
       this.beat(this.index++,this.nextTime);
