@@ -2,6 +2,8 @@
 
 一款复古卡通风格的 3D 网页卡丁车游戏。沿着 685 米的海湾环道跑计时赛，漂移蓄氮，挑战最佳单圈。游戏在浏览器里保存成绩，内置的原创配乐由 Web Audio 合成。
 
+[打开网页版试玩](https://shaeler.github.io/sunshine-kart/)
+
 ## 本地试玩
 
 在仓库根目录运行下面的命令，然后打开 [http://localhost:8000](http://localhost:8000)。需要支持 WebGL 2 的浏览器。游戏文件和 Three.js 都随仓库提供，无需安装 npm 依赖。
